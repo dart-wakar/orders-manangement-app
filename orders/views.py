@@ -24,7 +24,7 @@ class OrderEdit(APIView):
     def get_order(self,pk):
         try:
             return Orders.objects.get(pk=pk)
-        except Order.DoesNotExist:
+        except Orders.DoesNotExist:
             raise Http404
 
     def post(self,request,format=None):
@@ -35,3 +35,26 @@ class OrderEdit(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class OrderDelete(APIView):
+    def get_order(self,pk):
+        try:
+            return Orders.objects.get(pk=pk)
+        except Orders.DoesNotExist:
+            raise Http404
+
+    def post(self,request,format=None):
+        pk = request.data['id']
+        order = self.get_order(pk)
+        order.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class OrderListRetrieve(APIView):
+    def post(self,request,format=None):
+        pk_list = request.data['ids']
+        if pk_list:
+            orders = Orders.objects.filter(pk__in=pk_list)
+        else:
+            orders = Orders.objects.all()
+        serializer = OrderSerializer(orders,many=True)
+        return Response(serializer.data)
