@@ -25,17 +25,31 @@ class UserSerializer(serializers.ModelSerializer):
     def update(self,instance,validated_data):
         print("In Update")
         if instance is not None:
-            user = User.objects.get(pk=instance.user.pk)
-            user = instance.user
-            user.username = validated_data.get('user.username',user.username)
-            user.email = validated_data.get('user.email',user.email)
-            user.password = validated_data.get('user.password',user.password)
+            print("Instance is not null")
+            #user = User.objects.get(pk=instance.user.pk)
+            print(instance.user.first_name)
+            print(validated_data)
+            new_user_data = validated_data.pop('user')
+            print(new_user_data)
+            instance.user.username = new_user_data['username']
+            instance.user.email = new_user_data['email']
+            instance.user.password = new_user_data['password']
+            instance.user.first_name = new_user_data['first_name']
+            instance.user.last_name = new_user_data['last_name']
+            instance.user.username = validated_data.get('user.username',instance.user.username)
+            instance.user.email = validated_data.get('user.email',instance.user.email)
+            instance.user.password = validated_data.get('user.password',instance.user.password)
             #instance.user.orders = validated_data.get('user.orders',instance.user.orders)
             instance.phone = validated_data.get('phone',instance.phone)
-            user.first_name = validated_data.get('user.first_name',user.first_name)
-            user.last_name = validated_data.get('user.last_name',user.last_name)
+            instance.user.first_name = validated_data.get('user.first_name',instance.user.first_name)
+            instance.user.last_name = validated_data.get('user.last_name',instance.user.last_name)
             instance.address = validated_data.get('address',instance.address)
-            user.date_joined = validated_data.get('user.date_joined',user.date_joined)
+            instance.user.date_joined = validated_data.get('user.date_joined',instance.user.date_joined)
+            #print(instance.user.first_name)
+            #new_user_data = validated_data.pop('user')
+            #print(new_user_data)
+            #print(validated_data.pop('user'))
+            instance.user.save()
             instance.save()
             return instance
 

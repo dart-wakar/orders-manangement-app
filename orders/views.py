@@ -82,10 +82,27 @@ class UserDelete(APIView):
         try:
             return MyUser.objects.get(pk=pk)
         except MyUser.DoesNotExist:
-            return Http404
+            raise Http404
 
     def post(self,request,format=None):
         pk = request.data['id']
         myuser = self.get_myuser(pk)
         myuser.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class UserEdit(APIView):
+    def get_myuser(self,pk):
+        try:
+            return MyUser.objects.get(pk=pk)
+        except MyUser.DoesNotExist:
+            print ("oops")
+            raise Http404
+
+    def post(self,request,format=None):
+        pk = request.data['id']
+        myuser = self.get_myuser(pk)
+        serializer = UserSerializer(myuser,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
