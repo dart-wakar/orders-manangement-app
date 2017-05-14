@@ -1,5 +1,5 @@
-from orders.models import Orders
-from orders.serializers import OrderSerializer
+from orders.models import Orders,MyUser
+from orders.serializers import OrderSerializer,UserSerializer
 from rest_framework import generics
 from django.http import Http404
 from rest_framework.views import APIView
@@ -19,6 +19,8 @@ class OrderDetail(generics.RetrieveAPIView):
 class OrderCreate(generics.CreateAPIView):
     queryset = Orders.objects.all()
     serializer_class = OrderSerializer
+    def perform_create(self,serializer):
+        serializer.save(owner=self.request.user)
 
 class OrderEdit(APIView):
     def get_order(self,pk):
@@ -58,3 +60,32 @@ class OrderListRetrieve(APIView):
             orders = Orders.objects.all()
         serializer = OrderSerializer(orders,many=True)
         return Response(serializer.data)
+
+class UserRegister(APIView):
+    def post(self,request,format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class UserList(generics.ListAPIView):
+    queryset = MyUser.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = MyUser.objects.all()
+    serializer_class = UserSerializer
+
+class UserDelete(APIView):
+    def get_myuser(self,pk):
+        try:
+            return MyUser.objects.get(pk=pk)
+        except MyUser.DoesNotExist:
+            return Http404
+
+    def post(self,request,format=None):
+        pk = request.data['id']
+        myuser = self.get_myuser(pk)
+        myuser.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

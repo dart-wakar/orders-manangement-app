@@ -8,4 +8,8 @@ urlpatterns = [
     url(r'^orders/edit/$',views.OrderEdit.as_view()),
     url(r'^orders/delete/$',views.OrderDelete.as_view()),
     url(r'^orders/list/$',views.OrderListRetrieve.as_view()),
+    url(r'^users/register/$',views.UserRegister.as_view()),
+    url(r'^users/$',views.UserList.as_view()),
+    url(r'^users/(?P<pk>[0-9]+)/$',views.UserDetail.as_view()),
+    url(r'^users/delete/$',views.UserDelete.as_view()),
 ]
