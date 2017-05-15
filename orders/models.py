@@ -24,7 +24,7 @@ class MyUser(models.Model):
     #        user_profile.delete()
 
 class Orders(models.Model):
-    #owner = models.ForeignKey(MyUser,related_name='orders',on_delete=models.CASCADE)
+    owner = models.ForeignKey(MyUser,related_name='orders',on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=100,blank=True)

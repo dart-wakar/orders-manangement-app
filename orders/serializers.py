@@ -12,14 +12,14 @@ class UserSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk',read_only=True)
     username = serializers.CharField(source='user.username')
     email = serializers.CharField(source='user.email')
-    first_name = serializers.CharField(source='user.first_name',allow_blank=True)
-    last_name = serializers.CharField(source='user.last_name',allow_blank=True)
+    first_name = serializers.CharField(source='user.first_name',allow_blank=True,allow_null=True)
+    last_name = serializers.CharField(source='user.last_name',allow_blank=True,allow_null=True)
     password = serializers.CharField(source='user.password')
-    #orders = serializers.PrimaryKeyRelatedField(many=True,queryset=Orders.objects.all(),null=True,blank=True)
+    orders = serializers.PrimaryKeyRelatedField(many=True,queryset=Orders.objects.all(),allow_null=True,required=False)
 
     class Meta:
         model = MyUser
-        fields = ('id','username','email','password','first_name','last_name','phone','address')
+        fields = ('id','username','email','password','first_name','last_name','phone','address','orders')
         write_only_fields = ('password',)
 
     def update(self,instance,validated_data):
@@ -57,10 +57,12 @@ class UserSerializer(serializers.ModelSerializer):
         #user = User.objects.create_user(validated_data['username'],validated_data['email'],validated_data['password'])
         #user = User.objects.create(**user_data)
         #print(user)
+        print("Inside create")
         print(validated_data)
         user_data = validated_data.pop('user')
         print(user_data)
         user = User.objects.create_user(**user_data)
         user.save()
         myuser = MyUser.objects.create(user=user,**validated_data)
+        myuser.save()
         return myuser
