@@ -20,7 +20,9 @@ class OrderCreate(generics.CreateAPIView):
     queryset = Orders.objects.all()
     serializer_class = OrderSerializer
     def perform_create(self,serializer):
-        serializer.save(owner=self.request.user)
+        user_id = self.request.user.id
+        owner = MyUser.objects.get(pk=user_id)
+        serializer.save(owner=owner)
 
 class OrderEdit(APIView):
     def get_order(self,pk):

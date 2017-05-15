@@ -3,10 +3,10 @@ from orders.models import Orders,MyUser
 from django.contrib.auth.models import User
 
 class OrderSerializer(serializers.ModelSerializer):
-    #owner = serializers.ReadOnlyField(source='owner.id')
+    owner = serializers.ReadOnlyField(source='owner.id')
     class Meta:
         model = Orders
-        fields = ('id','created','modified','title','website_name','expected_delivery_date','status','delivered_date')
+        fields = ('id','created','modified','title','website_name','expected_delivery_date','status','delivered_date','owner')
 
 class UserSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk',read_only=True)
