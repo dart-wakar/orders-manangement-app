@@ -110,3 +110,16 @@ class UserEdit(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class CurrentUser(APIView):
+    def get_myuser(self,pk):
+        try:
+            return MyUser.objects.get(pk=pk)
+        except MyUser.DoesNotExist:
+            print ("oops")
+            raise Http404
+    def get(self,request,format=None):
+        pk = self.request.user.id
+        myuser = self.get_myuser(pk)
+        serializer = UserSerializer(myuser)
+        return Response(serializer.data)
