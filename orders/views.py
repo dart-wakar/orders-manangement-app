@@ -5,6 +5,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 # Create your views here.
 
@@ -66,6 +67,7 @@ class OrderListRetrieve(APIView):
         return Response(serializer.data)
 
 class UserRegister(APIView):
+    permission_classes = (AllowAny,)
     def post(self,request,format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
