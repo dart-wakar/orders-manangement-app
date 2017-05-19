@@ -66,6 +66,19 @@ class OrderListRetrieve(APIView):
         serializer = OrderSerializer(orders,many=True)
         return Response(serializer.data)
 
+class UserOrdersRetrieve(APIView):
+    def get_user_orders(self,user_id):
+        try:
+            return Orders.objects.filter(owner=user_id)
+        except Orders.DoesNotExist:
+            return Orders.objects.all()
+
+    def get(self,request,format=None):
+        user_id = self.request.user.id
+        user_orders = self.get_user_orders(user_id)
+        serializer = OrderSerializer(user_orders,many=True)
+        return Response(serializer.data)
+
 class UserRegister(APIView):
     permission_classes = (AllowAny,)
     def post(self,request,format=None):

@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^users/delete/$',views.UserDelete.as_view()),
     url(r'^users/edit/$',views.UserEdit.as_view()),
     url(r'^currentuser/$',views.CurrentUser.as_view()),
+    url(r'^userorders/$',views.UserOrdersRetrieve.as_view()),
 ]
